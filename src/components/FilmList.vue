@@ -1,12 +1,13 @@
 <template>
   <input type="text" v-model="searcher" />
-  {{ currentPageIndex + 1 }} / {{ pageCount }}
+  {{ pageCount !== 0 ? currentPageIndex + 1 : 0 }} / {{ pageCount }}
 
   <button @click="fetchData">Find</button>
 
   <button :disabled="currentPageIndex === 0" @click="currentPageIndex--">Prev page</button>
-  <button :disabled="currentPageIndex === pageCount - 1" @click="currentPageIndex++">Next page</button>
+  <button :disabled="currentPageIndex === pageCount - 1 || pageCount === 0" @click="currentPageIndex++">Next page</button>
 
+  <p>{{ paginatedData.length === 0 ? "Пока что ничего не нашли" : "" }}</p>
   <ul>
     <li v-for="element in paginatedData" :key="element.id">
       <p>{{ element.original_title }} ({{ element.release_date.slice(0, 4) }}) <span v-if="element.adult === false"> 18+</span></p>
@@ -28,16 +29,16 @@
   </ul>
 </template>
 
-<script>
+<script lang="ts">
 import axios from "axios";
 import Film from "../types/Film";
 
-const filmsPerPage = 1;
+const filmsPerPage = 5;
 
 export default {
   data() {
     return {
-      fetchedData: [],
+      fetchedData: [] as Film[],
       searcher: "",
       currentPageIndex: 0,
     };
@@ -48,21 +49,21 @@ export default {
   methods: {
     fetchData() {
       axios
-        .post("http://185.185.69.80:8082/list", { search: this.searcher }, { headers: { "Content-Type": "application/json" } })
-        .then((response) => {
+        .post("http://185.185.69.80:8082/list", { search: this.searcher, page: 5, page_size: 10 }, { headers: { "Content-Type": "application/json" } })
+        .then((response: Response) => {
           const dataObject = response.data;
-          console.log(response);
+          this.currentPageIndex = 0;
           this.fetchedData = dataObject.data;
         })
         .catch((e) => console.log(e));
     },
   },
   computed: {
-    pageCount() {
+    pageCount(): number {
       return Math.ceil(this.fetchedData.length / filmsPerPage);
     },
-    paginatedData() {
-      const start = this.currentPageIndex * filmsPerPage;
+    paginatedData(): Film[] {
+      const start: number = this.currentPageIndex * filmsPerPage;
       const end = start + filmsPerPage;
       console.log(this.fetchedData.slice(start, end));
       return this.fetchedData.slice(start, end);

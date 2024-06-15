@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import HelloWorld from "./components/HelloWorld.vue";
+import FilmListVue from "./components/FilmList.vue";
 </script>
 
-<template><hello-world /></template>
-g
+<template><film-list-vue /></template>
