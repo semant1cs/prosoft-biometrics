@@ -5,25 +5,24 @@
 
   <button v-if="scrolledPagesCount === 0" :disabled="currentPageIndex === 0" @click="currentPageIndex--">Prev page</button>
   <button v-if="scrolledPagesCount === 0" @click="currentPageIndex++">Next page</button>
-
-  <button v-if="scrolledPagesCount !== 0 || currentPageIndex !== 0" @click="resetView">Reset</button>
+  <button v-if="scrolledPagesCount !== 0 || currentPageIndex !== 0 || searcher !== ''" @click="resetView">Reset</button>
 
   <p>{{ paginatedData.length === 0 ? "Пока что ничего не нашли" : "" }}</p>
 
-  <select name="sortBy" id="sortFilm">
-    <option v-for="sortField in sortFields" value="sortField" :key="sortField">{{ sortField }}</option>
+  <select v-model="selectedSortBy">
+    <option v-for="sortField in sortFields" :value="sortField" :key="sortField">{{ sortField }}</option>
     <!-- TODO:  -->
     <!-- отсюда берем значение и сортируем в запросе sort_field -->
   </select>
 
-  <select name="sortOrder" id="sortOrder">
+  <select v-model="selectedSortOrder">
     <option value="desc">desc</option>
-    <option value="desc">asc</option>
+    <option value="asc">asc</option>
     <!-- TODO:  -->
     <!-- отсюда берем значение и сортируем в запросе sort_order -->
   </select>
 
-  <ul class="film-list" ref="list" @scroll="onLoadMoreFilms">
+  <ul class="film-list" ref="scrolledList" @scroll="onLoadMoreFilms">
     <film-card v-for="film in paginatedData" :film="film" :key="film.imdb_id" />
   </ul>
 </template>
@@ -37,8 +36,12 @@ import FilmCard from "./FilmCard.vue";
 const searcher = ref("");
 const currentPageIndex = ref(0);
 const paginatedData = ref([]);
-const list = ref(null);
+
+const scrolledList = ref(null);
 const scrolledPagesCount = ref(0);
+
+const selectedSortOrder = ref("");
+const selectedSortBy = ref("");
 
 watch(currentPageIndex, async () => {
   const newData = await fetchFilms(searcher.value, currentPageIndex.value, filmsPerPage);
@@ -53,35 +56,38 @@ onMounted(async () => {
   paginatedData.value = await fetchFilms("", 0, filmsPerPage);
 });
 
-const onLoadMoreFilms = async (event) => {
+async function onLoadMoreFilms(event) {
   const elemList = event.target;
-  scrolledPagesCount.value++;
 
   if (elemList.scrollTop + elemList.clientHeight >= elemList.scrollHeight) {
+    scrolledPagesCount.value++;
     const newData = await fetchFilms(searcher.value, scrolledPagesCount.value, filmsPerPage);
 
     paginatedData.value = paginatedData.value.concat(newData);
 
     if (paginatedData.value.length > 20) {
       paginatedData.value = paginatedData.value.slice(filmsPerPage, paginatedData.value.length - 1);
-      list.value.scrollTop -= filmsPerPage * filmsPerPage;
+      scrolledList.value.scrollTop -= filmsPerPage * filmsPerPage;
     }
   }
-};
+}
 
-const findFilms = async () => {
+async function findFilms() {
   paginatedData.value = [];
   currentPageIndex.value = 0;
 
   paginatedData.value = await fetchFilms(searcher.value, currentPageIndex.value, filmsPerPage);
-};
+}
 
-const resetView = async () => {
+async function resetView() {
   currentPageIndex.value = 0;
   scrolledPagesCount.value = 0;
+  selectedSortOrder.value = "";
+  selectedSortBy.value = "";
+  searcher.value = "";
   paginatedData.value = await fetchFilms(searcher.value, currentPageIndex.value, filmsPerPage);
-  list.value.scrollTop = 0;
-};
+  scrolledList.value.scrollTop = 0;
+}
 </script>
 
 <style lang="scss" scoped>

@@ -24,21 +24,14 @@
           </div>
         </a>
 
-        <div class="card-info-original-language">{{ film.original_language }}</div>
-
-        <div class="popularity">{{ film.popularity.toFixed(2) }}</div>
-
-        <div class="card-info-release-date">{{ film.release_date !== null ? film.release_date.slice(0, 4) : "-" }}</div>
-
-        <div class="card-info-runtime">{{ film.runtime + " minutes" ?? "-" }}</div>
-
-        <div class="card-info-budget">{{ film.budget ? film.budget.toLocaleString("ru") : "-" }}</div>
-
-        <div class="card-info-revenue">{{ film.revenue ? film.revenue.toLocaleString("ru") : "-" }}</div>
-
-        <div class="card-info-status">{{ film.status ?? "-" }}</div>
-
-        <div class="card-info-rating">{{ film.vote_average }}</div>
+        <span class="card-info-original-language">{{ film.original_language.toUpperCase() }}</span>
+        <span class="popularity">{{ film.popularity.toPrecision(2) }}</span>
+        <span class="card-info-release-date">{{ film.release_date !== null ? film.release_date.slice(0, 4) : "-" }}</span>
+        <span class="card-info-runtime">{{ film.runtime + " minutes" ?? "-" }}</span>
+        <span class="card-info-budget">{{ film.budget ? film.budget.toLocaleString("ru") : "-" }}</span>
+        <span class="card-info-revenue">{{ film.revenue ? film.revenue.toLocaleString("ru") : "-" }}</span>
+        <span class="card-info-status">{{ film.status ?? "-" }}</span>
+        <span class="card-info-rating">{{ film.vote_average }}</span>
       </div>
     </div>
   </li>
