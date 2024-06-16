@@ -1,5 +1,7 @@
-<script lang="ts" setup>
-import FilmListVue from "./components/FilmList.vue";
+<script setup>
+import FilmList from "./components/FilmList.vue";
 </script>
 
-<template><film-list-vue /></template>
+<template><FilmList /></template>
+
+<style scoped></style>

@@ -1,21 +1,22 @@
 {
-  "name": "prosoft-biometrics",
+  "name": "new",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc && vite build",
+    "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@vueuse/components": "^10.11.0",
+    "@vueuse/core": "^10.11.0",
     "axios": "^1.7.2",
     "vue": "^3.4.21"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.4",
-    "typescript": "^5.2.2",
-    "vite": "^5.2.0",
-    "vue-tsc": "^2.0.6"
+    "sass": "^1.77.5",
+    "vite": "^5.2.0"
   }
 }
