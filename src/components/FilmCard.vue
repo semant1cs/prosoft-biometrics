@@ -1,6 +1,8 @@
 <template>
   <li class="card">
-    <div class="card-index">{{ index + 1 }}</div>
+    <div class="card-index">
+      {{ film.imdb_id }}
+    </div>
     <a class="card-image" href="#"
       ><img
         src="https://upload.wikimedia.org/wikipedia/ru/thumb/a/ae/%D0%A1%D0%BF%D1%83%D1%82%D0%BD%D0%B8%D0%BA_%28%D1%84%D0%B8%D0%BB%D1%8C%D0%BC%2C_2020%29.jpg/640px-%D0%A1%D0%BF%D1%83%D1%82%D0%BD%D0%B8%D0%BA_%28%D1%84%D0%B8%D0%BB%D1%8C%D0%BC%2C_2020%29.jpg"
@@ -22,20 +24,28 @@
           </div>
         </a>
 
+        <div class="card-info-original-language">{{ film.original_language }}</div>
+
+        <div class="popularity">{{ film.popularity.toFixed(2) }}</div>
+
         <div class="card-info-release-date">{{ film.release_date !== null ? film.release_date.slice(0, 4) : "-" }}</div>
 
-        <div class="card-info-runtime">{{ film.runtime ?? "-" }} минут</div>
+        <div class="card-info-runtime">{{ film.runtime + " minutes" ?? "-" }}</div>
 
         <div class="card-info-budget">{{ film.budget ? film.budget.toLocaleString("ru") : "-" }}</div>
 
-        <div class="card-info-rating">9.8</div>
+        <div class="card-info-revenue">{{ film.revenue ? film.revenue.toLocaleString("ru") : "-" }}</div>
+
+        <div class="card-info-status">{{ film.status ?? "-" }}</div>
+
+        <div class="card-info-rating">{{ film.vote_average }}</div>
       </div>
     </div>
   </li>
 </template>
 
 <script setup>
-const props = defineProps({ film: { type: Object, required: true }, index: { type: Number, required: true } });
+const props = defineProps({ film: { type: Object, required: true } });
 </script>
 
 <style lang="scss" scoped>
@@ -70,7 +80,7 @@ const props = defineProps({ film: { type: Object, required: true }, index: { typ
 
 .card-info-film {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
   justify-content: space-between;
   width: 100%;
   color: gray;
