@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const fetchFilms = async (searchField, page, pageSize, sortField, sortOrder) => {
+export const fetchFilms = async (searchField, page, pageSize, sortField, sortOrder) => {
   // sort_field: sortField, sort_order: sortOrder можно добавить
   // эти поля и использовать их в фильтрах, которые находятся
   //  в FilmList.vue, однако запрос выдает ошибку
@@ -15,4 +15,3 @@ const fetchFilms = async (searchField, page, pageSize, sortField, sortOrder) => 
     .catch((e) => console.log(e));
 };
 
-export default fetchFilms;

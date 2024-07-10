@@ -3,17 +3,26 @@
     <div class="card-index">
       {{ film.imdb_id }}
     </div>
-    <a class="card-image" href="#"
+
+    <a v-if="film.homepage" class="card-image" href="#"
       ><img
-        src="https://upload.wikimedia.org/wikipedia/ru/thumb/a/ae/%D0%A1%D0%BF%D1%83%D1%82%D0%BD%D0%B8%D0%BA_%28%D1%84%D0%B8%D0%BB%D1%8C%D0%BC%2C_2020%29.jpg/640px-%D0%A1%D0%BF%D1%83%D1%82%D0%BD%D0%B8%D0%BA_%28%D1%84%D0%B8%D0%BB%D1%8C%D0%BC%2C_2020%29.jpg"
+        class="card-image__img"
+        :src="getRandomColorImage()"
         alt=""
-        height="100"
-        width="60"
     /></a>
+
+    <div v-else class="card-image">
+      <img
+        class="card-image__img"
+        :src="getRandomColorImage()"
+        alt=""
+      />
+    </div>
+
     <div class="card-info">
       <div class="card-info-film">
-        <a class="card-main-info" :href="film.homepage">
-          <div class="card-main-info-title">{{ film.original_title }} {{ film.adult ? "18+" : "" }}</div>
+        <a class="card-main-info">
+          <a class="card-main-info-title" :href="film.homepage">{{ film.original_title }} {{ film.adult ? "18+" : "" }}</a>
           <div class="card-info-genres">
             <span v-for="(genre, idx) in film.genres" :key="genre.name">{{ genre.name }}{{ idx < film.genres.length - 1 ? ", " : "" }} </span>
           </div>
@@ -38,6 +47,7 @@
 </template>
 
 <script setup>
+import { getRandomColorImage } from '../utils/const';
 const props = defineProps({ film: { type: Object, required: true } });
 </script>
 
@@ -64,6 +74,12 @@ const props = defineProps({ film: { type: Object, required: true } });
 
 .card-image {
   margin-left: 20px;
+
+  &__img {
+    height: 100px;
+    width: 60px;
+    object-fit: cover;
+  }
 }
 
 .card-info {

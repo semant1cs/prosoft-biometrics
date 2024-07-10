@@ -29,7 +29,7 @@
 
 <script setup>
 import { onMounted, ref, watch } from "vue";
-import fetchFilms from "../api/index";
+import { fetchFilms } from "../api/index";
 import { filmsPerPage, sortFields } from "../utils/const";
 import FilmCard from "./FilmCard.vue";
 
@@ -42,6 +42,7 @@ const scrolledPagesCount = ref(0);
 
 const selectedSortOrder = ref("");
 const selectedSortBy = ref("");
+
 
 watch(currentPageIndex, async () => {
   const newData = await fetchFilms(searcher.value, currentPageIndex.value, filmsPerPage);
