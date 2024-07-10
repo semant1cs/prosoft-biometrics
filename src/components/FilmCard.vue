@@ -40,7 +40,7 @@
         <span class="card-info-budget">{{ film.budget ? film.budget.toLocaleString("ru") : "-" }}</span>
         <span class="card-info-revenue">{{ film.revenue ? film.revenue.toLocaleString("ru") : "-" }}</span>
         <span class="card-info-status">{{ film.status ?? "-" }}</span>
-        <span class="card-info-rating">{{ film.vote_average }}</span>
+        <span class="card-info-rating">{{ film.vote_average.toPrecision(2) }}</span>
       </div>
     </div>
   </li>

@@ -1,7 +1,7 @@
 import { defineStore } from "pinia"
 import { onMounted, ref, watch } from "vue"
 import { fetchFilms } from "../api";
-import { filmsPerPage } from "../utils/const";
+import { filmsPerPage, maxFilmsOnPage } from "../utils/const";
 
 export const useFilmStore = defineStore('filmStore', () => {
     const searcher = ref("");
@@ -32,7 +32,7 @@ export const useFilmStore = defineStore('filmStore', () => {
       
           paginatedData.value = paginatedData.value.concat(newData);
       
-          if (paginatedData.value.length > 20) {
+          if (paginatedData.value.length > maxFilmsOnPage) {
             paginatedData.value = paginatedData.value.slice(filmsPerPage, paginatedData.value.length - 1);
           }
         }
