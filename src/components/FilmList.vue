@@ -1,97 +1,48 @@
 <template>
-  <input type="text" v-model="searcher" />
+  <input type="text" v-model="filmStore.searcher" />
 
-  <button @click="findFilms">Find</button>
+  <button @click="filmStore.findFilms">Find</button>
 
-  <button v-if="scrolledPagesCount === 0" :disabled="currentPageIndex === 0" @click="currentPageIndex--">Prev page</button>
-  <button v-if="scrolledPagesCount === 0" @click="currentPageIndex++">Next page</button>
-  <button v-if="scrolledPagesCount !== 0 || currentPageIndex !== 0 || searcher !== ''" @click="resetView">Reset</button>
+  <button v-if="filmStore.scrolledPagesCount === 0" :disabled="filmStore.currentPageIndex === 0" @click="filmStore.currentPageIndex--">Prev page</button>
+  <button v-if="filmStore.scrolledPagesCount === 0" @click="filmStore.currentPageIndex++">Next page</button>
+  <button v-if="filmStore.scrolledPagesCount !== 0 || filmStore.currentPageIndex !== 0 || filmStore.searcher !== ''" @click="resetPositionView">Reset</button>
 
-  <p>{{ paginatedData.length === 0 ? "Пока что ничего не нашли" : "" }}</p>
+  <p>{{ filmStore.paginatedData.length === 0 ? "Пока что ничего не нашли" : "" }}</p>
 
-  <select v-model="selectedSortBy">
+  <select v-model="filmStore.selectedSortBy">
     <option v-for="sortField in sortFields" :value="sortField" :key="sortField">{{ sortField }}</option>
     <!-- TODO:  -->
     <!-- отсюда берем значение и сортируем в запросе sort_field -->
   </select>
 
-  <select v-model="selectedSortOrder">
+  <select v-model="filmStore.selectedSortOrder">
     <option value="desc">desc</option>
     <option value="asc">asc</option>
     <!-- TODO:  -->
     <!-- отсюда берем значение и сортируем в запросе sort_order -->
   </select>
 
-  <ul class="film-list" ref="scrolledList" @scroll="onLoadMoreFilms">
-    <film-card v-for="film in paginatedData" :film="film" :key="film.imdb_id" />
+  <ul class="film-list" ref="scrolledList" @scroll="filmStore.onLoadMoreFilms">
+    <film-card v-for="film in filmStore.paginatedData" :film="film" :key="film.imdb_id" />
   </ul>
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from "vue";
-import { fetchFilms } from "../api/index";
-import { filmsPerPage, sortFields } from "../utils/const";
-import FilmCard from "./FilmCard.vue";
+import { ref } from "vue";
+
+import { sortFields } from "../utils/const";
 import { useFilmStore } from "../store/filmstore";
 
-const filmStore = useFilmStore();
-
-const searcher = ref("");
-const currentPageIndex = ref(0);
-const paginatedData = ref([]);
+import FilmCard from "./FilmCard.vue";
 
 const scrolledList = ref(null);
-const scrolledPagesCount = ref(0);
+const filmStore = useFilmStore();
 
-const selectedSortOrder = ref("");
-const selectedSortBy = ref("");
-
-
-watch(currentPageIndex, async () => {
-  const newData = await fetchFilms(searcher.value, currentPageIndex.value, filmsPerPage);
-  if (newData.length === 0) {
-    currentPageIndex.value--;
-    return;
-  }
-  paginatedData.value = newData;
-});
-
-onMounted(async () => {
-  paginatedData.value = await fetchFilms("", 0, filmsPerPage);
-});
-
-async function onLoadMoreFilms(event) {
-  const elemList = event.target;
-
-  if (elemList.scrollTop + elemList.clientHeight >= elemList.scrollHeight) {
-    scrolledPagesCount.value++;
-    const newData = await fetchFilms(searcher.value, scrolledPagesCount.value, filmsPerPage);
-
-    paginatedData.value = paginatedData.value.concat(newData);
-
-    if (paginatedData.value.length > 20) {
-      paginatedData.value = paginatedData.value.slice(filmsPerPage, paginatedData.value.length - 1);
-      scrolledList.value.scrollTop -= filmsPerPage * filmsPerPage;
-    }
-  }
-}
-
-async function findFilms() {
-  paginatedData.value = [];
-  currentPageIndex.value = 0;
-
-  paginatedData.value = await fetchFilms(searcher.value, currentPageIndex.value, filmsPerPage);
-}
-
-async function resetView() {
-  currentPageIndex.value = 0;
-  scrolledPagesCount.value = 0;
-  selectedSortOrder.value = "";
-  selectedSortBy.value = "";
-  searcher.value = "";
-  paginatedData.value = await fetchFilms(searcher.value, currentPageIndex.value, filmsPerPage);
+const resetPositionView = () => {
+  filmStore.resetView();
   scrolledList.value.scrollTop = 0;
 }
+
 </script>
 
 <style lang="scss" scoped>
