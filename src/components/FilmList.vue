@@ -32,6 +32,9 @@ import { onMounted, ref, watch } from "vue";
 import { fetchFilms } from "../api/index";
 import { filmsPerPage, sortFields } from "../utils/const";
 import FilmCard from "./FilmCard.vue";
+import { useFilmStore } from "../store/filmstore";
+
+const filmStore = useFilmStore();
 
 const searcher = ref("");
 const currentPageIndex = ref(0);
