@@ -92,7 +92,7 @@ const props = defineProps({ film: { type: Object, required: true } });
   grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
   justify-content: space-between;
   width: 100%;
-  color: gray;
+  color: black;
 }
 
 .card-main-info {

@@ -5,7 +5,7 @@
 
   <button v-if="filmStore.scrolledPagesCount === 0" :disabled="filmStore.currentPageIndex === 0" @click="filmStore.currentPageIndex--">Prev page</button>
   <button v-if="filmStore.scrolledPagesCount === 0" @click="filmStore.currentPageIndex++">Next page</button>
-  <button v-if="filmStore.scrolledPagesCount !== 0 || filmStore.currentPageIndex !== 0 || filmStore.searcher !== ''" @click="resetPositionView">Reset</button>
+  <button v-if="filmStore.currentPageIndex !== 0 || filmStore.searcher !== ''" @click="resetPositionView">Reset</button>
 
   <p>{{ filmStore.paginatedData.length === 0 ? "Пока что ничего не нашли" : "" }}</p>
 
@@ -34,6 +34,8 @@ import { sortFields } from "../utils/const";
 import { useFilmStore } from "../store/filmstore";
 
 import FilmCard from "./FilmCard.vue";
+import { watch } from "vue";
+import { watchEffect } from "vue";
 
 const scrolledList = ref(null);
 const filmStore = useFilmStore();
@@ -42,6 +44,14 @@ const resetPositionView = () => {
   filmStore.resetView();
   scrolledList.value.scrollTop = 0;
 }
+
+watchEffect((scrolledList, () => {
+  
+  if (scrolledList?.value?.clientHeight > 700) {
+    console.log(scrolledList?.value?.clientHeight)
+    filmStore.toNextPage();
+  }
+}))
 
 </script>
 
@@ -55,14 +65,15 @@ const resetPositionView = () => {
   row-gap: 30px;
   padding-right: 10px;
   list-style-type: none;
-  height: 90vh;
-  overflow: scroll;
+  height: 80vh;
+  width: 90vw;
+  overflow-y: scroll;
 }
 
 .film {
   color: black;
   min-width: 500px;
-  min-height: 340px;
+  max-height: 340px;
   background: rgb(60, 62, 68);
   border-radius: 10px;
   padding: 10px 20px;

@@ -5,6 +5,8 @@ export const fetchFilms = async (searchField, page, pageSize, sortField, sortOrd
   // эти поля и использовать их в фильтрах, которые находятся
   //  в FilmList.vue, однако запрос выдает ошибку
 
+  // https://drive.google.com/file/d/1P9Wq7wtfRpWkDuLPKafTILJZztJiR62W/view
+
   return axios
     .post("http://185.185.69.80:8082/list", { search: searchField, page: page, page_size: pageSize }, { headers: { "Content-Type": "application/json" } })
     .then((response) => {

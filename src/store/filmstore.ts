@@ -23,6 +23,15 @@ export const useFilmStore = defineStore('filmStore', () => {
         paginatedData.value = newData;
     });
 
+    watch(scrolledPagesCount, async () => {
+        const newData = await fetchFilms(searcher.value, scrolledPagesCount.value, filmsPerPage);
+        if (newData.length === 0) {
+          scrolledPagesCount.value--;
+          return;
+        }
+        paginatedData.value = paginatedData.value.concat(newData);
+    })
+
     async function onLoadMoreFilms(event) {
         const elemList = event.target;
       
@@ -37,6 +46,10 @@ export const useFilmStore = defineStore('filmStore', () => {
           }
         }
       }
+
+    function toNextPage() {
+        scrolledPagesCount.value++;
+    }
 
       async function findFilms() {
         paginatedData.value = [];
@@ -58,5 +71,5 @@ export const useFilmStore = defineStore('filmStore', () => {
         paginatedData.value = await fetchFilms("", 0, filmsPerPage);
       });
 
-    return {searcher, currentPageIndex, paginatedData, scrolledPagesCount, selectedSortBy, selectedSortOrder, onLoadMoreFilms, findFilms, resetView}
+    return {searcher, currentPageIndex, paginatedData, scrolledPagesCount, selectedSortBy, selectedSortOrder, onLoadMoreFilms, findFilms, resetView, toNextPage}
 })
