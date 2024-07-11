@@ -9,6 +9,7 @@ export const useFilmStore = defineStore('filmStore', () => {
     const paginatedData = ref([]);
 
     const scrolledPagesCount = ref(0);
+    const isListInited = ref(false);
 
     const selectedSortOrder = ref("");
     const selectedSortBy = ref("");
@@ -16,6 +17,7 @@ export const useFilmStore = defineStore('filmStore', () => {
 
     watch(currentPageIndex, async () => {
         const newData = await fetchFilms(searcher.value, currentPageIndex.value, filmsPerPage);
+        
         if (newData.length === 0) {
           currentPageIndex.value--;
           return;
@@ -35,21 +37,10 @@ export const useFilmStore = defineStore('filmStore', () => {
     async function onLoadMoreFilms(event) {
         const elemList = event.target;
       
-        if (elemList.scrollTop + elemList.clientHeight >= elemList.scrollHeight) {
+        if (elemList.scrollTop + elemList.clientHeight >= elemList.scrollHeight && isListInited) {
           scrolledPagesCount.value++;
-          const newData = await fetchFilms(searcher.value, scrolledPagesCount.value, filmsPerPage);
-      
-          paginatedData.value = paginatedData.value.concat(newData);
-      
-          if (paginatedData.value.length > maxFilmsOnPage) {
-            paginatedData.value = paginatedData.value.slice(filmsPerPage, paginatedData.value.length - 1);
-          }
         }
       }
-
-    function toNextPage() {
-        scrolledPagesCount.value++;
-    }
 
       async function findFilms() {
         paginatedData.value = [];
@@ -66,10 +57,14 @@ export const useFilmStore = defineStore('filmStore', () => {
         searcher.value = "";
         paginatedData.value = await fetchFilms(searcher.value, currentPageIndex.value, filmsPerPage);
       }
+
+      function toNextPage() {
+        scrolledPagesCount.value++;
+      }
     
       onMounted(async () => {
         paginatedData.value = await fetchFilms("", 0, filmsPerPage);
       });
 
-    return {searcher, currentPageIndex, paginatedData, scrolledPagesCount, selectedSortBy, selectedSortOrder, onLoadMoreFilms, findFilms, resetView, toNextPage}
+    return {searcher, currentPageIndex, paginatedData, scrolledPagesCount, selectedSortBy, selectedSortOrder, onLoadMoreFilms, findFilms, resetView}
 })

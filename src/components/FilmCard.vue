@@ -54,9 +54,12 @@ const props = defineProps({ film: { type: Object, required: true } });
 <style lang="scss" scoped>
 .card {
   display: flex;
+  
   box-sizing: border-box;
   width: 100%;
   padding: 24px 20px;
+  max-height: 150px;
+  min-width: 100%;
   border-radius: 16px;
   transition-timing-function: ease-out;
   transition-duration: 0.15s;
