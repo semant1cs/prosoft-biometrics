@@ -11,18 +11,27 @@
 
   <select v-model="filmStore.selectedSortBy">
     <option v-for="sortField in sortFields" :value="sortField" :key="sortField">{{ sortField }}</option>
-    <!-- TODO:  -->
-    <!-- отсюда берем значение и сортируем в запросе sort_field -->
   </select>
 
   <select v-model="filmStore.selectedSortOrder">
     <option value="desc">desc</option>
     <option value="asc">asc</option>
-    <!-- TODO:  -->
-    <!-- отсюда берем значение и сортируем в запросе sort_order -->
   </select>
 
+  
   <ul class="film-list" ref="scrolledList" @scroll="filmStore.onLoadMoreFilms">
+    <div class="legend">
+      <span>id</span>
+      <span class="legend-name">name</span>
+      <span>language</span>
+      <span>popularity</span>
+      <span>release date</span>
+      <span>runtime</span>
+      <span>budget</span>
+      <span>revenue</span>
+      <span>status</span>
+      <span>rating</span>
+  </div>
     <film-card v-for="film in filmStore.paginatedData" :film="film" :key="film.imdb_id" />
   </ul>
 </template>
@@ -77,5 +86,25 @@ onMounted(() => {
   border-radius: 10px;
   padding: 10px 20px;
   max-height: max-content;
+}
+
+.legend {
+  display: grid;
+  grid-template-columns: 1.5fr 1.5fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 24px 20px;
+  max-height: 150px;
+  min-width: 100%;
+  border-radius: 16px;
+  transition-timing-function: ease-out;
+  transition-duration: 0.15s;
+  transition-property: background-color;
+  border: black 1px solid;
+
+  &-name{
+    margin-right: 40px;
+  }
 }
 </style>
