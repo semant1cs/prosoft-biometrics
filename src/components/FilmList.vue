@@ -28,14 +28,12 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch, watchEffect } from "vue";
+import { onMounted, ref } from "vue";
 
 import { sortFields } from "../utils/const";
 import { useFilmStore } from "../store/filmstore";
 
 import FilmCard from "./FilmCard.vue";
-import { watch } from "vue";
-import { watchEffect } from "vue";
 
 const scrolledList = ref(null);
 const filmStore = useFilmStore();
@@ -47,9 +45,8 @@ const resetPositionView = () => {
 
 onMounted(() => {
   if (scrolledList.value && !filmStore.isListInited) {
-    if (scrolledList.value?.scrollHeight < window.screen.availHeight && !filmStore.isListInited) {
+    if (scrolledList.value?.scrollHeight < window.screen.availHeight) {
       filmStore.toNextPage();
-  } else {
       filmStore.isListInited = true;
     }
   }

@@ -14,9 +14,12 @@ export const useFilmStore = defineStore('filmStore', () => {
     const selectedSortOrder = ref("");
     const selectedSortBy = ref("");
 
+    onMounted(async () => {
+      paginatedData.value = await fetchFilms("", 0, filmsPerPage);
+    });
 
     watch(currentPageIndex, async () => {
-        const newData = await fetchFilms(searcher.value, currentPageIndex.value, filmsPerPage);
+        const newData = await fetchFilms(searcher.value, currentPageIndex.value, filmsPerPage, selectedSortBy.value, selectedSortOrder.value);
         
         if (newData.length === 0) {
           currentPageIndex.value--;
@@ -26,45 +29,45 @@ export const useFilmStore = defineStore('filmStore', () => {
     });
 
     watch(scrolledPagesCount, async () => {
-        const newData = await fetchFilms(searcher.value, scrolledPagesCount.value, filmsPerPage);
-        if (newData.length === 0) {
-          scrolledPagesCount.value--;
-          return;
-        }
-        paginatedData.value = paginatedData.value.concat(newData);
+      const newData = await fetchFilms(searcher.value, scrolledPagesCount.value, filmsPerPage, selectedSortBy.value, selectedSortOrder.value);
+      if (newData.length === 0) {
+        scrolledPagesCount.value--;
+        return;
+      }
+      paginatedData.value = paginatedData.value.concat(newData);
+
+      if (paginatedData.value.length > maxFilmsOnPage) {
+        paginatedData.value = paginatedData.value.slice(filmsPerPage, paginatedData.value.length - 1);
+      }
     })
 
     async function onLoadMoreFilms(event) {
-        const elemList = event.target;
-      
-        if (elemList.scrollTop + elemList.clientHeight >= elemList.scrollHeight && isListInited) {
-          scrolledPagesCount.value++;
-        }
-      }
+      const elemList = event.target;
 
-      async function findFilms() {
-        paginatedData.value = [];
-        currentPageIndex.value = 0;
-      
-        paginatedData.value = await fetchFilms(searcher.value, currentPageIndex.value, filmsPerPage);
-      }
-      
-      async function resetView() {
-        currentPageIndex.value = 0;
-        scrolledPagesCount.value = 0;
-        selectedSortOrder.value = "";
-        selectedSortBy.value = "";
-        searcher.value = "";
-        paginatedData.value = await fetchFilms(searcher.value, currentPageIndex.value, filmsPerPage);
-      }
-
-      function toNextPage() {
+      if (elemList.scrollTop + elemList.clientHeight + 1 >= elemList.scrollHeight && isListInited) {
         scrolledPagesCount.value++;
       }
-    
-      onMounted(async () => {
-        paginatedData.value = await fetchFilms("", 0, filmsPerPage);
-      });
+    }
 
-    return {searcher, currentPageIndex, paginatedData, scrolledPagesCount, selectedSortBy, selectedSortOrder, onLoadMoreFilms, findFilms, resetView}
+    async function findFilms() {
+      paginatedData.value = [];
+      currentPageIndex.value = 0;
+      
+      paginatedData.value = await fetchFilms(searcher.value, currentPageIndex.value, filmsPerPage, selectedSortBy.value, selectedSortOrder.value);
+    }
+      
+    async function resetView() {
+      currentPageIndex.value = 0;
+      scrolledPagesCount.value = 0;
+      selectedSortOrder.value = "";
+      selectedSortBy.value = "";
+      searcher.value = "";
+      paginatedData.value = await fetchFilms(searcher.value, currentPageIndex.value, filmsPerPage);
+    }
+
+    function toNextPage() {
+      scrolledPagesCount.value++;
+    }
+
+    return { searcher, currentPageIndex, paginatedData, scrolledPagesCount, selectedSortBy, selectedSortOrder, isListInited, onLoadMoreFilms, findFilms, resetView, toNextPage }
 })
