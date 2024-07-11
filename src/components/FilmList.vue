@@ -28,7 +28,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref, watch, watchEffect } from "vue";
 
 import { sortFields } from "../utils/const";
 import { useFilmStore } from "../store/filmstore";
@@ -43,12 +43,22 @@ const resetPositionView = () => {
   scrolledList.value.scrollTop = 0;
 }
 
+onMounted(() => {
+  if (scrolledList.value && !filmStore.isListInited) {
+    if (scrolledList.value?.scrollHeight < window.screen.availHeight && !filmStore.isListInited) {
+      filmStore.toNextPage();
+  } else {
+      filmStore.isListInited = true;
+    }
+  }
+})
+
 </script>
 
 <style lang="scss" scoped>
 .film-list {
-  display: grid;
-
+  display: flex;
+  flex-direction: column;
   margin-top: 20px;
   margin-left: 20px;
   margin-right: 20px;
