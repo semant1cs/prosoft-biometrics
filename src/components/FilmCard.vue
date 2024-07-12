@@ -34,9 +34,9 @@
         </a>
 
         <span class="card-info-original-language">{{ film.original_language.toUpperCase() }}</span>
-        <span class="popularity">{{ film.popularity.toPrecision(2) }}</span>
+        <span class="popularity">{{ film.popularity.toFixed(2) }}</span>
         <span class="card-info-release-date">{{ film.release_date !== null ? film.release_date.slice(0, 4) : "-" }}</span>
-        <span class="card-info-runtime">{{ film.runtime + " minutes" ?? "-" }}</span>
+        <span class="card-info-runtime">{{ film.runtime ? film.runtime.toString() + " minutes" : "-" }}</span>
         <span class="card-info-budget">{{ film.budget ? film.budget.toLocaleString("ru") : "-" }}</span>
         <span class="card-info-revenue">{{ film.revenue ? film.revenue.toLocaleString("ru") : "-" }}</span>
         <span class="card-info-status">{{ film.status ?? "-" }}</span>
