@@ -1,5 +1,5 @@
 <template>
- <film-list-controller />
+ <film-list-controller :resetPositionView="resetPositionView"/>
 
   <ul class="film-list" ref="scrolledList" @scroll="filmStore.onLoadMoreFilms">
     <li><legend-film-list/></li>
@@ -8,13 +8,31 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from "vue";
+
 import { useFilmStore } from "../store/filmstore";
 
 import FilmCard from "./FilmCard.vue";
 import LegendFilmList from "./LegendFilmList.vue";
 import FilmListController from "./FilmListController.vue";
 
+const scrolledList = ref(null);
 const filmStore = useFilmStore();
+
+onMounted(() => {
+  if (scrolledList.value && !filmStore.isListInited) {
+    if (scrolledList.value?.scrollHeight < window.screen.availHeight) {
+      filmStore.toNextPage();
+      filmStore.isListInited = true;
+    }
+  }
+})
+
+
+const resetPositionView = () => {
+  filmStore.resetView();
+  scrolledList.value.scrollTop = 0;
+}
 </script>
 
 <style lang="scss" scoped>
